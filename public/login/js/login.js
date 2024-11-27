@@ -19,7 +19,7 @@ $('#formPesquisa').submit(function (e) {
             }else
             {
                 mensagem("success","Logado com sucesso!");
-                window.location.href = "../home/index.php";
+                window.location.href = "emp.php?id=" + data.id;
             }
         },
         error: function () {

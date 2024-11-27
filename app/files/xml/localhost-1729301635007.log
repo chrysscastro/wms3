@@ -1,0 +1,25 @@
+style.css:1 
+        
+        
+       GET http://localhost/gabriel/assets/img/nav-expand.png 404 (Not Found)
+list_categoria.js:23 {code: 200, message: 'Busca realizada com sucesso!', data: Array(2)}code: 200data: (2) [{…}, {…}]message: "Busca realizada com sucesso!"[[Prototype]]: Object
+list_categoria.js:33 Uncaught TypeError: Cannot read properties of undefined (reading 'forEach')
+    at Object.success (list_categoria.js:33:28)
+    at i (jquery.min.js:2:27449)
+    at Object.fireWith [as resolveWith] (jquery.min.js:2:28213)
+    at y (jquery.min.js:4:22721)
+    at XMLHttpRequest.c (jquery.min.js:4:26925)
+success @ list_categoria.js:33
+i @ jquery.min.js:2
+fireWith @ jquery.min.js:2
+y @ jquery.min.js:4
+c @ jquery.min.js:4
+XMLHttpRequest.send
+send @ jquery.min.js:4
+ajax @ jquery.min.js:4
+getCatExpand @ list_categoria.js:15
+(anonymous) @ list_categoria.js:2
+i @ jquery.min.js:2
+fireWith @ jquery.min.js:2
+ready @ jquery.min.js:2
+K @ jquery.min.js:2

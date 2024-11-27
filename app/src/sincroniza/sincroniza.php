@@ -21,6 +21,8 @@ use app\database\connect;
 
     @$referencia = $_POST['ref'];
 
+    
+
     // Consulta SQL no PostgreSQL
     $pgsql_query = "
     SELECT pr.codigo AS artigo,
@@ -59,19 +61,20 @@ use app\database\connect;
     ORDER BY pr.descricao, cr.descricao, pa.tam DESC;
     ";
 
-
+    
 
     $pgsql_result = $bd->getQueryPostgres($pgsql_query);
     if (!$pgsql_result) {
         die("Erro ao executar a consulta no PostgreSQL: " . pg_last_error());
     }
 
+
     $total_records = $bd->getCountPostgres($pgsql_result);
     $processed_records = 0;
 
     $mensagem = null;
 
-    mail("suporte.txc@gmail.com","Inicio Sincronização de Produtos WMS","Inicio da Sincronização de Produtos WMS");
+    //mail("suporte.txc@gmail.com","Inicio Sincronização de Produtos WMS","Inicio da Sincronização de Produtos WMS");
 
     while ($row = pg_fetch_assoc($pgsql_result)) {
         $artigo = $row['artigo'];
@@ -100,7 +103,7 @@ use app\database\connect;
         $stmt = $bd->getQueryMysql($mysql_query);
 
         if ($stmt->num_rows > 0) {
-            // O registro existe, fazer update
+            
             $mensagem = "(Alterando) $descricao - $tam $cor | Barra28: $barra28 | BarraCli: $barracli | EAN: $ean13 \n";
 
             $update_query = "
@@ -115,7 +118,7 @@ use app\database\connect;
                 $mensagem = "(Erro ao alterar) $descricao - $tam $cor | Barra28: $barra28 | BarraCli: $barracli | EAN: $ean13 \n";
             }
         } else {
-            // O registro não existe, fazer insert
+            
             $mensagem =  "(Inserindo) $descricao - $tam $cor | Barra28: $barra28 | BarraCli: $barracli | EAN: $ean13 \n";
             $insert_query = "
                 INSERT INTO " . $setting::PREFIX_TABELAS . "prod_2 (artigo, descricao, cor, desccor, tam, barra28, barracli, ean13, grupo, descgrupo, preco, atacado,colecao,codcolecao)
@@ -131,7 +134,7 @@ use app\database\connect;
 
         $stmt->close();
 
-        mail("suporte.txc@gmail.com","Fim Sincronização de Produtos WMS","Fim da Sincronização de Produtos WMS");
+        //mail("suporte.txc@gmail.com","Fim Sincronização de Produtos WMS","Fim da Sincronização de Produtos WMS");
         $processed_records++;
         $progress = ($processed_records / $total_records) * 100;
         file_put_contents('progress.json', json_encode(['progress' => $progress]));

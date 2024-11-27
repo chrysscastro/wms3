@@ -1,6 +1,6 @@
 $(document).ready(function () {
     retornaDados();
-    setInterval(retornaDados,5000);
+    setInterval(retornaDados,1000);
 });
 function retornaDados(){
 
@@ -8,10 +8,12 @@ function retornaDados(){
     var status = $('select[name="status"]').val();
     var chave = $('input[name="chave"]').val();
     var tipo = $('select[name="tipo"]').val();
+    var limit = $('input[name="quantidade"').val();
+
     $.ajax({
         url: '../../app/src/rfid/rfid.php?funcao=fila',
         type: 'POST',
-        data: {status:status,chave:chave,tipo:tipo},
+        data: {status:status,chave:chave,tipo:tipo,limit:limit},
         async: true,
         success: function(data){
             if (data.status === "success") {
@@ -92,6 +94,39 @@ function refresh(id)
     });
 }
 
+
+function delete_or(id)
+{
+    $.ajax({
+        url: '../../app/src/rfid/rfid.php?funcao=delete',
+        type: 'POST',
+        data: {id: id},
+        beforeSend: function()
+        {
+            Swal.fire({
+                title: 'Aguarde...',
+                html: 'Enviando Documento.',
+                allowOutsideClick: false,
+                onBeforeOpen: () => {
+                  Swal.showLoading(); 
+                },
+                showConfirmButton: false,
+              });
+        },
+        success: function(data)
+        {
+            Swal.close();
+
+            mensagem(data.status,data.mensagem);
+            retornaDados();
+        },
+        error: function()
+        {
+            mensagem('error','Falha ao enviar documento para a Fila de Impressão!');
+        }
+
+    });
+}
 
 function get_json(id,chave)
 {

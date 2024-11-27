@@ -24,7 +24,7 @@
         <div class="login-wrap">
           <input type="text" class="form-control" name="usuario" placeholder="Usuário" autofocus>
           <br>
-          <input type="password" class="form-control" name="senha" placeholder="Senha">
+          <input type="password" class="form-control" name="senha" placeholder="Senha" >
           <br>
           <button class="btn btn-theme btn-block" href="index.html" type="submit"><i class="fa fa-lock"></i> SIGN IN</button>
           <hr>

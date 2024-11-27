@@ -6,6 +6,7 @@
         }
     },
     "require": {
-        "mpdf/qrcode": "^1.2"
+        "mpdf/qrcode": "^1.2",
+        "mike42/escpos-php": "*"
     }
 }

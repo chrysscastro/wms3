@@ -53,7 +53,6 @@ $ger->imprimir('
                             <th><i class="fa fa-key"></i> Permissão</th>
                             <th><i class="fa fa-calendar-times-o"></i> Último evento</th>
                             <th><i class="fa fa-info-circle"></i> Ativo</th>
-                            <th><i class="fa fa-sitemap"></i> Empresa</th>
                             <th><i class="fa fa-cog"></i> Painel</th>
                             <th></th>
                           </tr>
