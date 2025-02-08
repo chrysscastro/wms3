@@ -63,6 +63,17 @@
                             </select>
                             </div>
                         </div>
+                        <br><br>
+                        <div class="form-group has-success">
+                            <label for="quantidade" class="col-lg-2 control-label">Retorno</label>
+                            <div class="col-lg-10">
+                                <div class="d-flex align-items-center">
+                                    <input type="range" class="form-control-range mr-3" id="quantidade" name="quantidade" min="10" max="1000" value="100" oninput="quantidadeOutput.value = quantidade.value">
+                                    <output id="quantidadeOutput" style="width: 50px; text-align: center;">100</output>
+                                </div>
+                            </div>
+                        </div>
+                        <br><br>
                         <label>Todos os documentos que estão em falha ficam disponíveis no prazo de 4 horas! Após este prazo ele é automaticamente excluído.</label>
                         <table id = "tabelarfid" class="table table-striped table-advance table-hover">
                         <thead>

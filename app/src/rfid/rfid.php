@@ -1,139 +1,161 @@
 <?php
 
 
-    include_once(__DIR__ . "/../../database/database.php");
-    include_once(__DIR__ . "/../config/config_system.php");
-    include_once(__DIR__ . "/../../public/gerais.php");
+include_once(__DIR__ . "/../../database/database.php");
+include_once(__DIR__ . "/../config/config_system.php");
+include_once(__DIR__ . "/../../public/gerais.php");
 
 
 
-    use app\database\connect;
-    use app\public_\gerais;
-    use app\config\setting;
-    
-
-    $bd = new connect();
-    $setting = new setting();
-    $ger = new gerais();
+use app\database\connect;
+use app\public_\gerais;
+use app\config\setting;
 
 
-    //DECLARA JSON
+$bd = new connect();
+$setting = new setting();
+$ger = new gerais();
+
+
+//DECLARA JSON
+$json = null;
+$ger->doc_json();
+
+if (isset($_GET['funcao'])) {
+    $funcao = $_GET['funcao'];
+    $id = isset($_POST['id']) ? $_POST['id'] : 0;
+
+    $status = isset($_POST['status']) ? $_POST['status'] : '';
+    $chave = isset($_POST['chave']) ? $_POST['chave'] : '';
+    $tipo = isset($_POST['tipo']) ? $_POST['tipo'] : '';
+    $limit = isset($_POST['limit']) ? $_POST['limit'] : '';
+
+    switch ($funcao) {
+
+        case 'fila':
+            $json = fila($status, $tipo, $chave,$limit);
+            break;
+        case 'json':
+            $json = get_json($id);
+            break;
+        case 'refresh':
+            $json = refresh_fila($id);
+            break;
+        case 'return':
+            $json = get_return($id);
+            break;
+        case 'delete':
+            $json = del_job($id);
+            break;
+        default:
+            $json = array("status" => "error", "mensagem" => "Função não desconhecida!");
+            break;
+    }
+} else {
+    $json = array("status" => "error", "mensagem" => "Função não informada!");
+}
+
+
+if ($funcao != "json") {
+    $ger->imprimir(json_encode($json, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
+} else {
+    $ger->imprimir($json);
+}
+
+function del_job($id)
+{
+    global $bd;
+    global $setting;
+
+    $query = "DELETE " . $setting::PREFIX_TABELAS . "job_serv  WHERE id = '$id'";
+
+
+    $con = $bd->getQueryMysql($query);
+
     $json = null;
-    $ger->doc_json();
 
-    if(isset($_GET['funcao']))
-    {
-        $funcao = $_GET['funcao'];
-        $id = isset($_POST['id']) ? $_POST['id'] : 0;
-
-        $status = isset($_POST['status']) ? $_POST['status'] : '';
-        $chave = isset($_POST['chave']) ? $_POST['chave'] : '';
-        $tipo = isset($_POST['tipo']) ? $_POST['tipo'] : '';
-
-
-        switch ($funcao) {
-            
-            case 'fila':
-                $json = fila($status,$tipo,$chave);
-                break;
-            case 'json':
-                $json = get_json($id);
-                break;
-            case 'refresh':
-                $json = refresh_fila($id);
-                break;
-            case 'return':
-                $json = get_return($id);
-                break;
-            default:
-                $json = array("status" => "error","mensagem" => "Função não desconhecida!");
-                break;
-        }
-    }else
-    {
-        $json = array("status" => "error","mensagem" => "Função não informada!");
+    if ($con) {
+        $json = array("status" => "success", "mensagem" => "Documento deletado com sucesso!");
+    } else {
+        $json = array("status" => "error", "mensagem" => "Falha ao deletar o documento!");
     }
 
+    return $json;
+}
 
-    $ger->imprimir(json_encode($json,JSON_OBJECT_AS_ARRAY));
+function refresh_fila($id)
+{
+    global $bd;
+    global $setting;
 
-
-    function refresh_fila($id)
-    {
-        global $bd;
-        global $setting;
-
-        $query = "UPDATE " . $setting::PREFIX_TABELAS . "job_serv SET `status` = 'PENDENTE'
+    $query = "UPDATE " . $setting::PREFIX_TABELAS . "job_serv SET `status` = 'PENDENTE'
          WHERE id = '$id'";
 
 
-        $con = $bd->getQueryMysql($query);
+    $con = $bd->getQueryMysql($query);
 
-        $json = null;
+    $json = null;
 
-        if($con)
-        {
-            $json = array("status" => "success", "mensagem" => "Documento Enviado novamente para a Fila de Impressão!");
-        }else
-        {
-            $json = array("status" => "error", "mensagem" => "Falha ao enviar documento para a Fila de Impressão!");
-        }
-
-        return $json;
-
+    if ($con) {
+        $json = array("status" => "success", "mensagem" => "Documento Enviado novamente para a Fila de Impressão!");
+    } else {
+        $json = array("status" => "error", "mensagem" => "Falha ao enviar documento para a Fila de Impressão!");
     }
 
-    function get_return($id)
-    {
+    return $json;
+}
 
-        global $bd;
-        global $setting;
+function get_return($id)
+{
 
-        $query = "SELECT retorno FROM " . $setting::PREFIX_TABELAS . "job_mov WHERE movimento = '$id'";
+    global $bd;
+    global $setting;
 
-        $con = $bd->getQueryMysql($query);
+    $query = "SELECT retorno FROM " . $setting::PREFIX_TABELAS . "job_mov WHERE movimento = '$id'";
 
-        $json = null;
+    $con = $bd->getQueryMysql($query);
 
-        if ($con)
-        {
-            $row = $con->fetch_assoc();
-            $json = $row['retorno'];
-        }
+    $json = null;
 
-        return json_decode($json);
-
+    if ($con) {
+        $row = $con->fetch_assoc();
+        $json = $row['retorno'];
     }
 
-    function get_json($id)
-    {
+    return json_decode($json);
+}
 
-        global $bd;
-        global $setting;
+function get_json($id)
+{
 
-        $query = "SELECT json FROM " . $setting::PREFIX_TABELAS . "job_mov WHERE movimento = '$id'";
+    global $bd;
+    global $setting;
 
-        $con = $bd->getQueryMysql($query);
+    $query = "SELECT `json` as retorno FROM " . $setting::PREFIX_TABELAS . "job_mov WHERE movimento = '$id'";
 
-        $json = null;
+    $con = $bd->getQueryMysql($query);
 
-        if ($con)
-        {
-            $row = $con->fetch_assoc();
-            $json = $row['json'];
-        }
+    $json = null;
 
-        return json_decode($json);
+    if ($con) {
 
+        $row = $con->fetch_assoc();
+        $json = $row['retorno'];
     }
 
-    function fila($status,$tipo,$chave)
-    {
-    
-        global $bd;
-        global $setting;
-        
-        $query = "SELECT 
+
+
+
+    return $json;
+}
+
+function fila($status, $tipo, $chave,$limit)
+{
+
+    global $bd;
+    global $setting;
+
+    $query = "SELECT 
                     i.datacria AS datacria, 
                     i.id AS id, 
                     i.tipo AS tipo, 
@@ -165,45 +187,33 @@
                     END, 
                     datacria DESC, 
                     `status` DESC
-                LIMIT 500;
+                LIMIT $limit;
                 ";
 
-        
 
-        $result = $bd->getQueryMysql($query);
-        $result_num = $bd->getCountMysql($result);
 
-        $item = array();
+    $result = $bd->getQueryMysql($query);
+    $result_num = $bd->getCountMysql($result);
 
-        if($result_num > 0)
-        {
-            while ($row = $result->fetch_assoc())
-            {
-                $data = DateTime::createFromFormat('Y-m-d H:i:s', $row['datacria']);
-                $data_formatada = $data->format('d/m/Y H:i:s');
+    $item = array();
 
-                $item[] =  array("id" => $row['id'],
-                                        "tipo" => $row['tipo'],
-                                        "data" => $data_formatada,
-                                        "chave" => $row['chave'],
-                                        "serie" => $row['serie'],
-                                        "status" => $row['status'],
-                                        "usuario" => $row['usuario']);
-            }
+    if ($result_num > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $data = DateTime::createFromFormat('Y-m-d H:i:s', $row['datacria']);
+            $data_formatada = $data->format('d/m/Y H:i:s');
 
-        } 
-
-        $json = array("status" => "success", "mensagem" => "Dados retornados!", "retorno" => $item);
-        return $json;
+            $item[] =  array(
+                "id" => $row['id'],
+                "tipo" => $row['tipo'],
+                "data" => $data_formatada,
+                "chave" => $row['chave'],
+                "serie" => $row['serie'],
+                "status" => $row['status'],
+                "usuario" => $row['usuario']
+            );
+        }
     }
 
-
-
-
-?>
-
-
-
-
-
-
+    $json = array("status" => "success", "mensagem" => "Dados retornados!", "retorno" => $item);
+    return $json;
+}

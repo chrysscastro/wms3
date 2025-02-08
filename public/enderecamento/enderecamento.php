@@ -1,35 +1,34 @@
 <?php
 
-    include_once(__DIR__ . "/../../app/src/theme/construct.php");
-    include_once(__DIR__ . "/../../app/public/gerais.php");
+include_once(__DIR__ . "/../../app/src/theme/construct.php");
+include_once(__DIR__ . "/../../app/public/gerais.php");
 
 
 
-    use app\src\theme\construct_theme;
-    use app\public_\gerais;
+use app\src\theme\construct_theme;
+use app\public_\gerais;
 
-    $theme = new construct_theme();
+$theme = new construct_theme();
 
-    $theme->construct_head();
+$theme->construct_head();
 
-    $ger = new gerais();
-    
-    $ger->imprimir('<body>');
-    $ger->imprimir('<section id="container">');
+$ger = new gerais();
 
-
-    $theme->construct_menu(); 
-
-    if(isset($_POST['endereco']))
-    {
-
-    
-
-    $endereco = $_POST['endereco'];
-    
+$ger->imprimir('<body>');
+$ger->imprimir('<section id="container">');
 
 
-    $ger->imprimir('
+$theme->construct_menu();
+
+if (isset($_POST['endereco'])) {
+
+
+
+  $endereco = $_POST['endereco'];
+
+
+
+  $ger->imprimir('
     <section id="main-content">
       <section class="wrapper">
         <div class="row mt">
@@ -41,7 +40,7 @@
                     <label class="col-lg-2 control-label">Item</label>
                     <div class="col-lg-10">
                     <input type="text" placeholder="" id = "valor" name = "valor" class="form-control" autofocus>
-                    <input type="hidden" placeholder=""  name = "endereco" value = "' . $endereco . '" class="form-control" autofocus>
+                    <input type="hidden" placeholder=""  name = "endereco" value = "' . $endereco . '" class="form-control" autofocus required>
                     <p class="help-block">Insira o Item desejado! Formatos aceito: (Barra28 / BarraCli / Ean13)</p>
                     </div>
                 </div>
@@ -86,21 +85,16 @@
     </section>
     
     ');
+} else {
+  $ger->imprimir('<script>window.location.href = "vw_end.php"</script>');
+}
 
-    }else{
-        $ger->imprimir('<script>window.location.href = "vw_end.php"</script>');
-    }    
-
-    $theme->construct_footer(); 
-
-    
-
-    $ger->imprimir('</section>');
-
-    $ger->get_js("js/enderecamento.js");
-
-    $ger->imprimir('</body>');
+$theme->construct_footer();
 
 
 
-?>
+$ger->imprimir('</section>');
+
+$ger->get_js("js/enderecamento.js");
+
+$ger->imprimir('</body>');

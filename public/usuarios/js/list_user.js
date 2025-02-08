@@ -3,8 +3,7 @@ $(document).ready(function () {
     $('#formPesquisa').submit(function(e) {
         e.preventDefault();
 
-       var nome = $('input[name="chave"]').value;
-
+       var nome = $('input[name="chave"]').val();
        retornaDados(nome);
     });  
 });
@@ -30,6 +29,8 @@ function retornaDados(nome){
                 var items = data.dados;
                 var tbody = $('#tabelaUsuarios tbody');
 
+                tbody.empty();
+
                 items.forEach(function(item) {
 
                     if (item.ativo === '-1'){
@@ -54,9 +55,8 @@ function retornaDados(nome){
                         <td>${item.permissao}</td>
                         <td>${item.ultevento}</td>
                         <td>${item.ativo}</td>
-                        <td>${item.empresa}</td>
                         <td>
-                        <button onclick="alterar(${item.id})" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></button>
+                        <a class="btn btn-primary btn-xs" href="user.php?val=${item.id}"><i class="fa fa-edit"></i></a>
                         </td>
                         <td></td>
                     </tr>`;

@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
 
     if ($tokenRequisicao) {
         $conexao = mysqli_connect(
-            "ti.txc.com.br",
+            "apl.txc.com.br",
             "txc",
             "Ti@2015!*",
             "DW",
@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
 
 
         $conexaowms = mysqli_connect(
-            "ti.txc.com.br",
+            "apl.txc.com.br",
             "txc",
             "Ti@2015!*",
             "txc_db_wms",
@@ -86,7 +86,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
                         $referencia = end($pl);
                         $imagem = "http://ti.txc.com.br/apl/v1/barramento/produto/$artigo.jpg";
                         $imagemteceo = "http://ti.txc.com.br/teceo/" . $artigo . "/" . $referencia . "_" . $cor . "_001.jpg";
-                        
+
 
                         $item = [
                             "artigo" => "$artigo",
@@ -139,9 +139,6 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
     http_response_code(400);
     $retorno = ["code" => 400, "mensagem" => "Requisição inválida!"];
 }
-$retorno = json_encode($retorno,JSON_UNESCAPED_SLASHES);
+$retorno = json_encode($retorno, JSON_UNESCAPED_SLASHES);
 header("Content-type: application/json");
 echo $retorno;
-
-
-?>
